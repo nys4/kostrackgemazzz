@@ -1,5 +1,6 @@
-
-
+:root {
+  color-scheme: light dark;
+}
 * {
   box-sizing: border-box;
 }
@@ -1176,4 +1177,14 @@ body,
 
     color: white;
   }
+}
+
+.auth-card h1,
+.auth-card h2,
+.auth-card label {
+  color: #000000;
+}
+
+.auth-card p {
+  color: #000000;
 }
