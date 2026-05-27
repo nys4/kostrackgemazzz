@@ -48,15 +48,15 @@ export default function App() {
     note: "",
   });
 
-const [budgets, setBudgets] = useState([]);
+  const [budgets, setBudgets] = useState([]);
 
-const [budgetForm, setBudgetForm] = useState({
-  category: "Makan & Minum",
-  limit: "",
-});
+  const [budgetForm, setBudgetForm] = useState({
+    category: "Makan & Minum",
+    limit: "",
+  });
 
-const [editingBudget, setEditingBudget] =
-  useState(null);
+  const [editingBudget, setEditingBudget] =
+    useState(null);
 
   const [wishlist, setWishlist] = useState([]);
 
@@ -98,53 +98,53 @@ const [editingBudget, setEditingBudget] =
     return () => unsubscribe();
   }, []);
 
-const fetchTransactions = async (userId) => {
-  const q = query(
-    collection(db, "transactions"),
-    where("userId", "==", userId)
-  );
+  const fetchTransactions = async (userId) => {
+    const q = query(
+      collection(db, "transactions"),
+      where("userId", "==", userId)
+    );
 
-  const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q);
 
-  const data = querySnapshot.docs.map((item) => ({
-    firebaseId: item.id,
-    ...item.data(),
-  }));
+    const data = querySnapshot.docs.map((item) => ({
+      firebaseId: item.id,
+      ...item.data(),
+    }));
 
-  setTransactions(data);
-};
+    setTransactions(data);
+  };
 
-const fetchBudgets = async (userId) => {
-  const q = query(
-    collection(db, "budgets"),
-    where("userId", "==", userId)
-  );
+  const fetchBudgets = async (userId) => {
+    const q = query(
+      collection(db, "budgets"),
+      where("userId", "==", userId)
+    );
 
-  const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q);
 
-  const data = querySnapshot.docs.map((item) => ({
-    firebaseId: item.id,
-    ...item.data(),
-  }));
+    const data = querySnapshot.docs.map((item) => ({
+      firebaseId: item.id,
+      ...item.data(),
+    }));
 
-  setBudgets(data);
-};
+    setBudgets(data);
+  };
 
-const fetchWishlists = async (userId) => {
-  const q = query(
-    collection(db, "wishlists"),
-    where("userId", "==", userId)
-  );
+  const fetchWishlists = async (userId) => {
+    const q = query(
+      collection(db, "wishlists"),
+      where("userId", "==", userId)
+    );
 
-  const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q);
 
-  const data = querySnapshot.docs.map((item) => ({
-    firebaseId: item.id,
-    ...item.data(),
-  }));
+    const data = querySnapshot.docs.map((item) => ({
+      firebaseId: item.id,
+      ...item.data(),
+    }));
 
-  setWishlist(data);
-};
+    setWishlist(data);
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -205,12 +205,12 @@ const fetchWishlists = async (userId) => {
 
   const balance = totalIncome - totalExpense;
   const totalBudget = budgets.reduce(
-  (sum, item) => sum + Number(item.limit),
-  0
-  
-);
+    (sum, item) => sum + Number(item.limit),
+    0
 
-const remainingBudget =balance - totalBudget;
+  );
+
+  const remainingBudget = balance - totalBudget;
 
   const expenseByCategory = useMemo(() => {
     return categories
@@ -317,46 +317,46 @@ const remainingBudget =balance - totalBudget;
     };
   }, [transactions, balance, totalExpense, biggestCategory]);
 
-const topMoodData = useMemo(() => {
-  const moodTotals = {};
+  const topMoodData = useMemo(() => {
+    const moodTotals = {};
 
-  transactions
-    .filter(
-      (item) =>
-        item.type === "expense" &&
-        item.mood &&
-        item.mood !== "-"
-    )
-    .forEach((item) => {
-      if (!moodTotals[item.mood]) {
-        moodTotals[item.mood] = 0;
-      }
+    transactions
+      .filter(
+        (item) =>
+          item.type === "expense" &&
+          item.mood &&
+          item.mood !== "-"
+      )
+      .forEach((item) => {
+        if (!moodTotals[item.mood]) {
+          moodTotals[item.mood] = 0;
+        }
 
-      moodTotals[item.mood] += Number(item.amount);
-    });
+        moodTotals[item.mood] += Number(item.amount);
+      });
 
-  const totalExpenseMood = Object.values(
-    moodTotals
-  ).reduce((a, b) => a + b, 0);
+    const totalExpenseMood = Object.values(
+      moodTotals
+    ).reduce((a, b) => a + b, 0);
 
-  if (totalExpenseMood === 0) {
+    if (totalExpenseMood === 0) {
+      return {
+        mood: "Belum ada data mood",
+        percent: 0,
+      };
+    }
+
+    const topMood = Object.entries(moodTotals).sort(
+      (a, b) => b[1] - a[1]
+    )[0];
+
     return {
-      mood: "Belum ada data mood",
-      percent: 0,
+      mood: topMood[0],
+      percent: Math.round(
+        (topMood[1] / totalExpenseMood) * 100
+      ),
     };
-  }
-
-  const topMood = Object.entries(moodTotals).sort(
-    (a, b) => b[1] - a[1]
-  )[0];
-
-  return {
-    mood: topMood[0],
-    percent: Math.round(
-      (topMood[1] / totalExpenseMood) * 100
-    ),
-  };
-}, [transactions]);
+  }, [transactions]);
 
   const addIncome = async (e) => {
     e.preventDefault();
@@ -424,172 +424,172 @@ const topMoodData = useMemo(() => {
     setTransactions(transactions.filter((trx) => trx.id !== item.id));
   };
 
-const addBudget = async (e) => {
-  e.preventDefault();
+  const addBudget = async (e) => {
+    e.preventDefault();
 
-  if (!budgetForm.category || !budgetForm.limit)
-    return;
+    if (!budgetForm.category || !budgetForm.limit)
+      return;
 
-  if (editingBudget) {
-    const budgetToEdit = budgets.find(
-      (item) => item.id === editingBudget
-    );
+    if (editingBudget) {
+      const budgetToEdit = budgets.find(
+        (item) => item.id === editingBudget
+      );
 
-    if (budgetToEdit?.firebaseId) {
-      await updateDoc(
-        doc(
-          db,
-          "budgets",
-          budgetToEdit.firebaseId
-        ),
+      if (budgetToEdit?.firebaseId) {
+        await updateDoc(
+          doc(
+            db,
+            "budgets",
+            budgetToEdit.firebaseId
+          ),
+          {
+            limit: Number(budgetForm.limit),
+          }
+        );
+      }
+
+      setBudgets(
+        budgets.map((item) =>
+          item.id === editingBudget
+            ? {
+              ...item,
+              limit: Number(budgetForm.limit),
+            }
+            : item
+        )
+      );
+
+      setEditingBudget(null);
+    } else {
+      const existingBudget = budgets.find(
+        (item) =>
+          item.category === budgetForm.category
+      );
+
+      if (existingBudget) {
+        alert("Budget kategori ini sudah ada");
+        return;
+      }
+
+      const newBudget = {
+        userId: user.uid,
+        id: Date.now(),
+        category: budgetForm.category,
+        limit: Number(budgetForm.limit),
+      };
+
+      const docRef = await addDoc(
+        collection(db, "budgets"),
+        newBudget
+      );
+
+      setBudgets([
         {
-          limit: Number(budgetForm.limit),
-        }
+          firebaseId: docRef.id,
+          ...newBudget,
+        },
+        ...budgets,
+      ]);
+    }
+
+    setBudgetForm({
+      category: "Makan & Minum",
+      limit: "",
+    });
+  };
+
+  const deleteBudget = async (
+    id,
+    firebaseId
+  ) => {
+    if (firebaseId) {
+      await deleteDoc(
+        doc(db, "budgets", firebaseId)
       );
     }
 
     setBudgets(
-      budgets.map((item) =>
-        item.id === editingBudget
-          ? {
-              ...item,
-              limit: Number(budgetForm.limit),
-            }
-          : item
+      budgets.filter(
+        (budget) => budget.id !== id
       )
     );
+  };
 
-    setEditingBudget(null);
-  } else {
-    const existingBudget = budgets.find(
+  const addWishlist = async (e) => {
+    e.preventDefault();
+
+    if (!wishlistForm.name || !wishlistForm.price) return;
+
+    const sameItem = wishlist.find(
       (item) =>
-        item.category === budgetForm.category
-    );
-
-    if (existingBudget) {
-      alert("Budget kategori ini sudah ada");
-      return;
-    }
-
-    const newBudget = {
-      userId: user.uid,
-      id: Date.now(),
-      category: budgetForm.category,
-      limit: Number(budgetForm.limit),
-    };
-
-    const docRef = await addDoc(
-      collection(db, "budgets"),
-      newBudget
-    );
-
-    setBudgets([
-      {
-        firebaseId: docRef.id,
-        ...newBudget,
-      },
-      ...budgets,
-    ]);
-  }
-
-  setBudgetForm({
-    category: "Makan & Minum",
-    limit: "",
-  });
-};
-
-const deleteBudget = async (
-  id,
-  firebaseId
-) => {
-  if (firebaseId) {
-    await deleteDoc(
-      doc(db, "budgets", firebaseId)
-    );
-  }
-
-  setBudgets(
-    budgets.filter(
-      (budget) => budget.id !== id
-    )
-  );
-};
-
-const addWishlist = async (e) => {
-  e.preventDefault();
-
-  if (!wishlistForm.name || !wishlistForm.price) return;
-
-  const sameItem = wishlist.find(
-    (item) =>
-      item.name.toLowerCase().trim() ===
+        item.name.toLowerCase().trim() ===
         wishlistForm.name.toLowerCase().trim() &&
-      Number(item.price) === Number(wishlistForm.price)
-  );
-
-  if (sameItem) {
-    const newSaved = Math.min(
-      Number(sameItem.saved) + Number(wishlistForm.saved || 0),
-      Number(sameItem.price)
+        Number(item.price) === Number(wishlistForm.price)
     );
 
-    if (sameItem.firebaseId) {
-      await updateDoc(doc(db, "wishlists", sameItem.firebaseId), {
-        saved: newSaved,
-        priority: wishlistForm.priority,
-      });
-    }
+    if (sameItem) {
+      const newSaved = Math.min(
+        Number(sameItem.saved) + Number(wishlistForm.saved || 0),
+        Number(sameItem.price)
+      );
 
-    setWishlist(
-      wishlist.map((item) =>
-        item.id === sameItem.id
-          ? {
+      if (sameItem.firebaseId) {
+        await updateDoc(doc(db, "wishlists", sameItem.firebaseId), {
+          saved: newSaved,
+          priority: wishlistForm.priority,
+        });
+      }
+
+      setWishlist(
+        wishlist.map((item) =>
+          item.id === sameItem.id
+            ? {
               ...item,
               saved: newSaved,
               priority: wishlistForm.priority,
             }
-          : item
-      )
-    );
-  } else {
-    const newWishlist = {
-      userId: user.uid,
-      id: Date.now(),
-      name: wishlistForm.name,
-      price: Number(wishlistForm.price),
-      saved: Number(wishlistForm.saved || 0),
-      priority: wishlistForm.priority,
-    };
+            : item
+        )
+      );
+    } else {
+      const newWishlist = {
+        userId: user.uid,
+        id: Date.now(),
+        name: wishlistForm.name,
+        price: Number(wishlistForm.price),
+        saved: Number(wishlistForm.saved || 0),
+        priority: wishlistForm.priority,
+      };
 
-    const docRef = await addDoc(
-      collection(db, "wishlists"),
-      newWishlist
-    );
+      const docRef = await addDoc(
+        collection(db, "wishlists"),
+        newWishlist
+      );
 
-    setWishlist([
-      {
-        firebaseId: docRef.id,
-        ...newWishlist,
-      },
-      ...wishlist,
-    ]);
-  }
+      setWishlist([
+        {
+          firebaseId: docRef.id,
+          ...newWishlist,
+        },
+        ...wishlist,
+      ]);
+    }
 
-  setWishlistForm({
-    name: "",
-    price: "",
-    saved: "",
-    priority: "Kebutuhan",
-  });
-};
+    setWishlistForm({
+      name: "",
+      price: "",
+      saved: "",
+      priority: "Kebutuhan",
+    });
+  };
 
   const deleteWishlist = async (id, firebaseId) => {
-  if (firebaseId) {
-    await deleteDoc(doc(db, "wishlists", firebaseId));
-  }
+    if (firebaseId) {
+      await deleteDoc(doc(db, "wishlists", firebaseId));
+    }
 
-  setWishlist(wishlist.filter((item) => item.id !== id));
-};
+    setWishlist(wishlist.filter((item) => item.id !== id));
+  };
 
   if (!user) {
     return (
@@ -648,18 +648,18 @@ const addWishlist = async (e) => {
         )}
 
         {page === "budget" && (
-<BudgetPage
-  budgets={budgets}
-  budgetForm={budgetForm}
-  setBudgetForm={setBudgetForm}
-  addBudget={addBudget}
-  deleteBudget={deleteBudget}
-  categories={categories}
-  transactions={transactions}
-  formatRupiah={formatRupiah}
-  editingBudget={editingBudget}
-  setEditingBudget={setEditingBudget}
-/>
+          <BudgetPage
+            budgets={budgets}
+            budgetForm={budgetForm}
+            setBudgetForm={setBudgetForm}
+            addBudget={addBudget}
+            deleteBudget={deleteBudget}
+            categories={categories}
+            transactions={transactions}
+            formatRupiah={formatRupiah}
+            editingBudget={editingBudget}
+            setEditingBudget={setEditingBudget}
+          />
         )}
 
         {page === "wishlist" && (
@@ -822,17 +822,17 @@ function Dashboard({
   });
 
   const [impulseCart, setImpulseCart] = useState(() => {
-  const savedCart = localStorage.getItem("impulseCart");
+    const savedCart = localStorage.getItem("impulseCart");
 
-  return savedCart ? JSON.parse(savedCart) : [];
-});
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
 
-useEffect(() => {
-  localStorage.setItem(
-    "impulseCart",
-    JSON.stringify(impulseCart)
-  );
-}, [impulseCart]);
+  useEffect(() => {
+    localStorage.setItem(
+      "impulseCart",
+      JSON.stringify(impulseCart)
+    );
+  }, [impulseCart]);
 
   const [challengeForm, setChallengeForm] = useState({
     title: "",
@@ -840,20 +840,20 @@ useEffect(() => {
   });
 
   const [challenges, setChallenges] = useState(() => {
-  const savedChallenges =
-    localStorage.getItem("challenges");
+    const savedChallenges =
+      localStorage.getItem("challenges");
 
-  return savedChallenges
-    ? JSON.parse(savedChallenges)
-    : [];
-});
+    return savedChallenges
+      ? JSON.parse(savedChallenges)
+      : [];
+  });
 
-useEffect(() => {
-  localStorage.setItem(
-    "challenges",
-    JSON.stringify(challenges)
-  );
-}, [challenges]);
+  useEffect(() => {
+    localStorage.setItem(
+      "challenges",
+      JSON.stringify(challenges)
+    );
+  }, [challenges]);
 
   const totalImpulse = impulseCart.reduce(
     (sum, item) => sum + Number(item.price),
@@ -897,18 +897,18 @@ useEffect(() => {
   const donutGradient =
     expenseByCategory.length > 0 && totalExpense > 0
       ? `conic-gradient(${expenseByCategory
-          .map((item, index) => {
-            const previousTotal = expenseByCategory
-              .slice(0, index)
-              .reduce((sum, cat) => sum + Number(cat.total), 0);
+        .map((item, index) => {
+          const previousTotal = expenseByCategory
+            .slice(0, index)
+            .reduce((sum, cat) => sum + Number(cat.total), 0);
 
-            const start = (previousTotal / totalExpense) * 100;
-            const end =
-              ((previousTotal + Number(item.total)) / totalExpense) * 100;
+          const start = (previousTotal / totalExpense) * 100;
+          const end =
+            ((previousTotal + Number(item.total)) / totalExpense) * 100;
 
-            return `${categoryColors[item.category] || "#94a3b8"} ${start}% ${end}%`;
-          })
-          .join(", ")})`
+          return `${categoryColors[item.category] || "#94a3b8"} ${start}% ${end}%`;
+        })
+        .join(", ")})`
       : "#e5e7eb";
 
   const addChallenge = () => {
@@ -1072,11 +1072,11 @@ useEffect(() => {
                   </div>
 
                   <button
-  className="trash-btn"
-  onClick={() => deleteImpulseItem(item.id)}
->
-  ✕
-</button>
+                    className="trash-btn"
+                    onClick={() => deleteImpulseItem(item.id)}
+                  >
+                    ✕
+                  </button>
                 </div>
               ))}
             </div>
@@ -1157,41 +1157,41 @@ useEffect(() => {
 
                     <p>Status: {done ? "Selesai 🎉" : "Berjalan"}</p>
 
-<div className="challenge-actions">
+                    <div className="challenge-actions">
 
-  {!done && (
-    <button
-      className="challenge-icon-btn"
-      onClick={() =>
-        completeChallengeDay(challenge.id)
-      }
-      title="Hari ini berhasil"
-    >
-      ✓
-    </button>
-  )}
+                      {!done && (
+                        <button
+                          className="challenge-icon-btn"
+                          onClick={() =>
+                            completeChallengeDay(challenge.id)
+                          }
+                          title="Hari ini berhasil"
+                        >
+                          ✓
+                        </button>
+                      )}
 
-  <button
-    className="challenge-icon-btn"
-    onClick={() =>
-      resetChallenge(challenge.id)
-    }
-    title="Reset"
-  >
-    ↻
-  </button>
+                      <button
+                        className="challenge-icon-btn"
+                        onClick={() =>
+                          resetChallenge(challenge.id)
+                        }
+                        title="Reset"
+                      >
+                        ↻
+                      </button>
 
-  <button
-    className="challenge-icon-btn"
-    onClick={() =>
-      deleteChallenge(challenge.id)
-    }
-    title="Hapus"
-  >
-    ✕
-  </button>
+                      <button
+                        className="challenge-icon-btn"
+                        onClick={() =>
+                          deleteChallenge(challenge.id)
+                        }
+                        title="Hapus"
+                      >
+                        ✕
+                      </button>
 
-</div>
+                    </div>
 
                   </div>
                 );
@@ -1199,62 +1199,62 @@ useEffect(() => {
             </div>
           </div>
 
-<div className="insight-card">
-  <h3>🙂 Mood Spending Tracker</h3>
+          <div className="insight-card">
+            <h3>🙂 Mood Spending Tracker</h3>
 
-  <div className="mood-analysis">
+            <div className="mood-analysis">
 
-    <h4>Mood paling sering:</h4>
-    <p>
-    <p>
-  Kamu paling sering mengeluarkan uang saat merasa{" "}
-  <strong>{topMood.mood}</strong> ({topMood.percent}%)
-</p>
-    </p>
+              <h4>Mood paling sering:</h4>
+              <p>
+                <p>
+                  Kamu paling sering mengeluarkan uang saat merasa{" "}
+                  <strong>{topMood.mood}</strong> ({topMood.percent}%)
+                </p>
+              </p>
 
-    {topMood.mood === "Stres" && (
-      <div className="mood-warning">
-        ⚠️ Kamu sering belanja saat stres.
-        Coba hindari checkout ketika emosi sedang tidak stabil.
-      </div>
-    )}
+              {topMood.mood === "Stres" && (
+                <div className="mood-warning">
+                  ⚠️ Kamu sering belanja saat stres.
+                  Coba hindari checkout ketika emosi sedang tidak stabil.
+                </div>
+              )}
 
-    {topMood.mood === "Lapar" && (
-      <div className="mood-warning">
-        🍔 Banyak pengeluaran terjadi saat lapar.
-        Coba makan dulu sebelum membuka aplikasi makanan.
-      </div>
-    )}
+              {topMood.mood === "Lapar" && (
+                <div className="mood-warning">
+                  🍔 Banyak pengeluaran terjadi saat lapar.
+                  Coba makan dulu sebelum membuka aplikasi makanan.
+                </div>
+              )}
 
-    {topMood.mood === "Ikut Teman" && (
-      <div className="mood-warning">
-        👥 Kamu sering spending karena ikut teman.
-        Coba buat batas nongkrong mingguan.
-      </div>
-    )}
+              {topMood.mood === "Ikut Teman" && (
+                <div className="mood-warning">
+                  👥 Kamu sering spending karena ikut teman.
+                  Coba buat batas nongkrong mingguan.
+                </div>
+              )}
 
-    {topMood.mood === "Bosan" && (
-      <div className="mood-warning">
-        🎮 Pengeluaran karena bosan cukup tinggi.
-        Cari aktivitas gratis untuk mengurangi impulsive spending.
-      </div>
-    )}
+              {topMood.mood === "Bosan" && (
+                <div className="mood-warning">
+                  🎮 Pengeluaran karena bosan cukup tinggi.
+                  Cari aktivitas gratis untuk mengurangi impulsive spending.
+                </div>
+              )}
 
-    {topMood.mood === "Senang" && (
-      <div className="mood-warning">
-        🎉 Kamu sering belanja saat sedang senang.
-        Tetap kontrol pengeluaran walaupun mood sedang bagus.
-      </div>
-    )}
+              {topMood.mood === "Senang" && (
+                <div className="mood-warning">
+                  🎉 Kamu sering belanja saat sedang senang.
+                  Tetap kontrol pengeluaran walaupun mood sedang bagus.
+                </div>
+              )}
 
-    {topMood.mood === "Biasa" && (
-      <div className="mood-warning">
-        👍 Pengeluaranmu cukup stabil dan tidak terlalu dipengaruhi emosi.
-      </div>
-    )}
+              {topMood.mood === "Biasa" && (
+                <div className="mood-warning">
+                  👍 Pengeluaranmu cukup stabil dan tidak terlalu dipengaruhi emosi.
+                </div>
+              )}
 
-  </div>
-</div>
+            </div>
+          </div>
         </section>
 
         <section className="panel">
@@ -1548,33 +1548,33 @@ function BudgetPage({ budgets, budgetForm, setBudgetForm, addBudget, deleteBudge
                     <div style={{ width: `${percent}%` }}></div>
                   </div>
                   {percent >= 80 && <span className="warning-text">Budget hampir habis</span>}
-<button
-  type="button"
-  className="edit-budget-btn"
-  onClick={() => {
-    setBudgetForm({
-      category: budget.category,
-      limit: budget.limit,
-    });
+                  <button
+                    type="button"
+                    className="edit-budget-btn"
+                    onClick={() => {
+                      setBudgetForm({
+                        category: budget.category,
+                        limit: budget.limit,
+                      });
 
-    setEditingBudget(budget.id);
-  }}
->
-  ✏️
-</button>
+                      setEditingBudget(budget.id);
+                    }}
+                  >
+                    ✏️
+                  </button>
 
-<button
-  type="button"
-  className="delete-budget-btn"
-  onClick={() =>
-  deleteBudget(
-    budget.id,
-    budget.firebaseId
-  )
-}
->
-  Hapus Budget
-</button>
+                  <button
+                    type="button"
+                    className="delete-budget-btn"
+                    onClick={() =>
+                      deleteBudget(
+                        budget.id,
+                        budget.firebaseId
+                      )
+                    }
+                  >
+                    Hapus Budget
+                  </button>
                 </div>
               );
             })}

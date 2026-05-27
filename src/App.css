@@ -1,6 +1,7 @@
 :root {
   color-scheme: light dark;
 }
+
 * {
   box-sizing: border-box;
 }
@@ -48,11 +49,9 @@ button {
   width: 52px;
   height: 52px;
   border-radius: 20px;
-  background: linear-gradient(
-    135deg,
-    #7c3aed,
-    #5b21b6
-  );
+  background: linear-gradient(135deg,
+      #7c3aed,
+      #5b21b6);
   display: flex;
   align-items: center;
   justify-content: center;
